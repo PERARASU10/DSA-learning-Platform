@@ -1,23 +1,31 @@
 # 🧠 DSA Learning and Execution Platform
 
-An interactive and educational platform for mastering **Data Structures and Algorithms (DSA)** — with theory, code, and hands-on execution all in one place. Built for students, developers, and anyone who wants to strengthen their DSA skills.
+An interactive and educational platform to learn and execute **Data Structures and Algorithms (DSA)** in your preferred language — currently focused on code implementation, with exciting learning features coming soon!
 
-## 🚀 Features
+---
 
-- ✅ **Comprehensive DSA Coverage**  
-  Includes Linked Lists, Trees, Graphs, Stacks, Queues, Sorting, Searching, Dynamic Programming, and more.
+## 🚀 Current Features
 
-- 💻 **Code Repository with Explanations**  
-  Each concept is implemented in **C, C++, Java, and Python**, along with detailed, beginner-friendly explanations.
+- ✅ **Multi-language Code Repository**
+  - DSA concepts implemented in **C, C++, Java, and Python**
+  - Covers essential topics like:
+    - Arrays, Linked Lists, Stacks, Queues
+    - Trees, Graphs, Recursion
+    - Sorting and Searching Algorithms
+    - Dynamic Programming and more
 
-- 🧮 **Interactive Calculator**  
-  Enter your own input and see real-time output and **step-by-step execution** for each algorithm.
+> 📌 **Note:** Currently, the platform includes only **code implementations**. Educational and interactive components will be added soon.
 
-- 📊 **Visualization Support** *(Optional/Future)*  
-  Animated walkthroughs for better understanding of algorithms (in progress or planned).
+---
 
-- 🌐 **Multi-language Support**  
-  Learn DSA in your preferred programming language.
+## 🛠️ Technologies Used
+
+- **Frontend**: HTML, CSS, JavaScript  
+- **Backend (Optional)**: Python / Node.js *(if used)*  
+- **Language Support**: C, C++, Java, Python
+
+---
+
 
 ## 📸 Screenshots
 ![Screenshot (181)](https://github.com/user-attachments/assets/ceb0ef53-1524-405c-bd85-d7f0a03d5eea)
@@ -41,3 +49,60 @@ An interactive and educational platform for mastering **Data Structures and Algo
 ├── 📂explanations/
 ├── 📂docs/
 └── README.md
+
+```
+
+---
+
+## 📌 Upcoming Features
+
+These powerful features are **under development** and will be released in future updates:
+
+- 📚 **Theory and Concept Notes**  
+  Clear and concise theoretical explanations for each DSA topic.
+
+- 💡 **Code Explanation Section**  
+  Step-by-step breakdown of how each algorithm works.
+
+- 📈 **Algorithm Visualization**  
+  Animated visual tools to demonstrate how algorithms function.
+
+- 🧮 **Interactive Calculator**  
+  Allows users to input custom data and view live outputs and logic flow.
+
+- 🧠 **AI-Based Learning Assistant** *(Future Plan)*  
+  A smart assistant to guide users based on their learning patterns.
+
+---
+
+## 📦 How to Run Locally
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/perarasu10/dsa-learning-platform.git
+cd dsa-learning-platform
+```
+
+2.Open index.html in your browser directly
+
+
+## 🤝 Contributing
+
+We welcome contributions from the community!  
+If you have ideas, improvements, or fixes:
+
+- 📌 Open an [Issue](https://github.com/perarasu10/dsa-learning-platform/issues)
+- 📌 Create a Pull Request
+- ⭐ Or just give us a star if you like the project!
+
+---
+
+## 🙌 Acknowledgements
+
+Special thanks to all **educators**, **open-source contributors**, and **learners** who inspire this platform every day.
+
+---
+
+**Made with 💻 and ❤️ by PERARASU**
+
