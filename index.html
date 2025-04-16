@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive DSA Platform</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <!-- Add Monaco Editor -->
+  <script src="https://unpkg.com/monaco-editor@0.33.0/min/vs/loader.js"></script>
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --success-color: #16a34a;
+      --background-color: #f8fafc;
+      --border-color: #e2e8f0;
+      --text-color: #1e293b;
+    }
+
+    .compiler-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      padding: 12px 24px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, background-color 0.2s, opacity 0.3s;
+    }
+
+    .compiler-button.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .compiler-button:hover {
+      background-color: #ff0000;
+      transform: translateY(-1px);
+    }
+
+    .compiler-container {
+      position: fixed;
+      top: 0;
+      right: -1000px;
+      width: 1000px;
+      height: 100vh;
+      background-color: var(--background-color);
+      box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .compiler-container.active {
+      right: 0;
+    }
+
+    .compiler-container.minimized {
+      width: 100px;
+      height: 60px;
+      overflow: hidden;
+    }
+
+    .compiler-container.minimized .compiler-body,
+    .compiler-container.minimized .compiler-header select,
+    .compiler-container.minimized .compiler-header .compiler-title {
+      display: none;
+    }
+
+    .compiler-container.minimized .minimize-compiler {
+      transform: rotate(180deg);
+    }
+
+    .compiler-header {
+      background-color: rgb(82, 187, 236);
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .compiler-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    #languageSelector {
+      padding: 8px 16px;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      color: var(--text-color);
+      background-color: white;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    #languageSelector:hover {
+      border-color: var(--primary-color);
+    }
+
+    .minimize-compiler,
+    .close-compiler {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--text-color);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+    }
+
+    .minimize-compiler:hover,
+    .close-compiler:hover {
+      background-color: var(--border-color);
+    }
+
+    .compiler-body {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    #codeEditor {
+      flex: 1;
+      min-height: 300px;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden; /* Ensure Monaco Editor fits properly */
+    }
+
+    .output-container {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  padding: 16px;
+  color: white;
+  position: relative;
+}
+
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #runCode {
+      padding: 10px 20px;
+      background-color: var(--success-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.2s;
+    }
+
+    #runCode:hover {
+      background-color: #15803d;
+    }
+
+    #runCode::before {
+      content: "▶";
+      font-size: 12px;
+    }
+
+    #output {
+  background-color: #1e1e1e;
+  color: white;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 100px;
+  max-height: 300px;
+  overflow-y: auto;
+  resize: vertical;
+}
+    /* Scrollbar styling */
+    .compiler-container *::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .compiler-container *::-webkit-scrollbar-track {
+      background: var(--background-color);
+    }
+
+    .compiler-container *::-webkit-scrollbar-thumb {
+      background: #0b6de5;
+      border-radius: 4px;
+    }
+
+    .compiler-container *::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Interactive DSA Platform</h1>
+    <p>Learn Data Structures and Algorithms with Code</p>
+  </header>
+
+  <!-- Compiler Button -->
+  <button id="openCompiler" class="compiler-button">Open Compiler</button>
+
+  <!-- Enhanced Compiler Container -->
+  <div id="compilerContainer" class="compiler-container">
+    <div class="compiler-header">
+      <div class="compiler-title">Online Compiler</div>
+      <select id="languageSelector">
+        <option value="python">Python</option>
+        <option value="java">Java</option>
+        <option value="c">C</option>
+        <option value="cpp">C++</option>
+      </select>
+      <button class="minimize-compiler" id="minimizeCompiler">↓</button>
+      <button class="close-compiler" id="closeCompiler">×</button>
+    </div>
+    <div class="compiler-body">
+      <!-- Replace textarea with a div for Monaco Editor -->
+      <div id="codeEditor"></div>
+      <div class="output-container">
+        <div class="output-header">
+          <div class="output-title">Output</div>
+          <button id="runCode">Run Code</button>
+        </div>
+        <pre id="output">Output will appear here...</pre>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section id="concepts-section">
+      <h2>DSA Concepts</h2>
+      <ul id="concepts-list"></ul>
+    </section>
+
+    <section id="details-section">
+      <h2 id="details-title">Details</h2>
+      <div id="types-list" class="hidden">
+        <h3>Types</h3>
+        <ul id="sorting-types-list"></ul>
+      </div>
+      <div id="code-section" class="hidden">
+        <h2 id="concept-title"></h2>
+        <div id="language-buttons">
+          <button data-language="java">Java</button>
+          <button data-language="python">Python</button>
+          <button data-language="c">C</button>
+          <button data-language="cpp">C++</button>
+        </div>
+        <div id="code-container" style="position: relative;">
+          <button id="copy-button" style="
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+          ">Copy</button>
+          <pre id="code-display">Code will appear here.</pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Interactive DSA Platform</p>
+  </footer>
+</body>
+</html>
